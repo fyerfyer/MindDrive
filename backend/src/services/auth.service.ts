@@ -1,4 +1,4 @@
-import { getReasonPhrase, StatusCodes } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 import { AppError } from "../middlewares/errorHandler";
 import {
   generateToken,
@@ -42,7 +42,6 @@ interface StoredSession {
   createdAt: string;
 }
 
-/** Returned to the frontend (no refreshToken exposed). */
 export interface SessionInfo {
   deviceId: string;
   userAgent: string;
@@ -54,14 +53,12 @@ export interface SessionInfo {
 
 const SESSION_PREFIX = "session:";
 const REVOKED_PREFIX = "revoked:";
-const ACCESS_TOKEN_TTL = 15 * 60; // 15 minutes — matches JWT expiry
-const REFRESH_TOKEN_TTL = 30 * 24 * 60 * 60; // 30 days in seconds
+const ACCESS_TOKEN_TTL = 15 * 60;
+const REFRESH_TOKEN_TTL = 30 * 24 * 60 * 60;
 const MAX_SESSIONS_PER_USER = 5;
 
 export class AuthService {
   constructor(private userService: UserService) {}
-
-  // ───────────── Session helpers ─────────────────────────────────────
 
   private sessionKey(userId: string, deviceId: string): string {
     return `${SESSION_PREFIX}${userId}:${deviceId}`;
